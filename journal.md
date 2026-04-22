@@ -21,3 +21,21 @@
    in Week 5. When I upload a document and ask a question, embeddings are what
    find the most relevant chunks to answer from. Without understanding this Day 3
    concept, RAG would feel like magic. Now it makes sense.
+
+## Day 4 — Your First Real API Call
+
+1. What I built: An interactive terminal chatbot using the raw Groq API with no
+   frameworks. It takes my input, sends it to Llama 3.3, and prints the response
+   along with the token count used for each call.
+
+2. Key insight: Each API call is completely stateless. The model has zero memory
+   between calls — every question starts fresh. When I asked "What did I just say?"
+   it had no idea. This is because we are only sending one message at a time, not
+   the full conversation history. Day 7 fixes this by passing the entire message
+   list with every call.
+
+3. What I understood about the message structure: Every API call needs a list of
+   messages with roles — 'system' sets the behavior, 'user' is my question, and
+   'assistant' is what the model previously said. This structure is the foundation
+   that every framework like LangChain is built on top of. Understanding this raw
+   level makes frameworks feel transparent instead of magical.
