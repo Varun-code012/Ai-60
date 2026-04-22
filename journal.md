@@ -39,3 +39,41 @@
    'assistant' is what the model previously said. This structure is the foundation
    that every framework like LangChain is built on top of. Understanding this raw
    level makes frameworks feel transparent instead of magical.
+
+## Day 5 — Temperature & Parameters
+Date: 22-04-2026
+
+### What I built
+Ran the same creative prompt (thriller novel set in Ballari) at 4 different
+temperatures: 0.0, 0.7, 1.0, and 1.5. Also tested a factual prompt at both
+extremes to observe the difference.
+
+### Key observations
+- At temp=0.0 all 3 runs gave nearly identical sentences — the model plays it safe
+- At temp=1.5 all 3 runs were completely different — sometimes creative, sometimes weird
+- The factual question (capital of Karnataka) answered "Bengaluru" correctly at
+  ALL temperatures — temperature barely affects factual answers
+- Sweet spot for creative writing felt like 0.7 — varied but still coherent
+
+### My temperature rule of thumb
+- 0.0 – 0.3 → facts, code, data extraction (need consistency)
+- 0.7 – 1.0 → creative writing, personas, storytelling (need variety)
+- 1.0 – 1.2 → brainstorming, idea generation (need diversity)
+- Above 1.5 → almost never useful, output gets incoherent
+
+### What surprised me
+Temperature has almost zero effect on factual answers — the model's training
+is strong enough to override randomness when the answer is clear-cut.
+For creative tasks though, even 0.3 difference in temperature noticeably
+changes the output style.
+
+### One question I still have
+What exactly is top_p (nucleus sampling) and how is it different from
+temperature? Should I ever tune both at the same time?
+
+## Day 6 Challenge — Coding-Only Bot
+- Learned that vague system prompts fail — specificity is everything
+- Explicit allow-list + deny-list works much better than a single rule
+- Giving the model exact refusal wording makes responses consistent
+- "Even if user insists" line prevents simple jailbreak attempts
+
