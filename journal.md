@@ -41,7 +41,6 @@
    level makes frameworks feel transparent instead of magical.
 
 ## Day 5 — Temperature & Parameters
-Date: 22-04-2026
 
 ### What I built
 Ran the same creative prompt (thriller novel set in Ballari) at 4 different
@@ -76,4 +75,53 @@ temperature? Should I ever tune both at the same time?
 - Explicit allow-list + deny-list works much better than a single rule
 - Giving the model exact refusal wording makes responses consistent
 - "Even if user insists" line prevents simple jailbreak attempts
+
+## Day 7 — Stateful Chatbot with Memory
+
+### What I built
+A CLI chatbot that remembers the entire conversation by passing the full
+message history as a Python list with every API call. Added a token counter
+using tiktoken to watch context grow in real time.
+
+### How memory actually works at the API level
+The OpenAI/Groq API is completely stateless — it remembers nothing between
+calls. WE simulate memory by maintaining a messages list in Python and
+sending the entire conversation history with every single API call.
+Memory = a growing Python list. Nothing more, nothing less.
+
+### What I observed
+- Told the bot my name and favorite food in message 1
+- Asked for them in message 5 — it remembered correctly
+- Token count grew from ~50 tokens at turn 1 to ~500+ by turn 5
+- Every single turn adds both the user message AND assistant reply to context
+- The more you chat, the more tokens you consume per call
+
+### What happens at 500 turns?
+The context keeps growing linearly. Eventually it hits the 128K token limit
+and the API throws a context_length_exceeded error. The entire conversation
+breaks. This is why production chatbots need smarter memory strategies.
+
+### The three production solutions (to build in Week 3)
+1. Truncation — drop oldest messages when context gets too long
+2. ConversationBufferWindowMemory — keep only last N turns (LangChain)
+3. ConversationSummaryMemory — summarize old turns instead of deleting
+   (best quality, slightly more expensive)
+
+### Biggest insight of Week 1
+LangChain's memory abstractions are just automated versions of the
+messages list I built manually today. Now that I've built it from scratch,
+frameworks make complete sense — they're not magic, just convenience.
+
+### Week 1 complete — what I can now do
+- Make raw API calls with full parameter control
+- Count tokens and estimate costs before calling the API
+- Compute semantic similarity between sentences using embeddings
+- Build an interactive API loop from scratch
+- Control model behavior with temperature
+- Create distinct AI personas using only system prompts
+- Build a stateful chatbot with manual memory management
+
+### One question I still have
+How does ConversationSummaryMemory decide what to summarize and what to
+keep? Does it summarize after every turn or only when context gets too long?
 
