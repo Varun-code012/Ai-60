@@ -125,3 +125,82 @@ frameworks make complete sense — they're not magic, just convenience.
 How does ConversationSummaryMemory decide what to summarize and what to
 keep? Does it summarize after every turn or only when context gets too long?
 
+
+## Day 8 — Zero-shot vs Few-shot Prompting
+Date: 24-04-2026
+
+### What I built
+A headline classifier that tests 3 prompting approaches — zero-shot,
+one-shot, and five-shot — on the same set of news headlines.
+Compared accuracy and output consistency across all three approaches.
+
+### What zero-shot, one-shot, five-shot mean
+- Zero-shot : no examples given — just ask the model directly
+- One-shot  : one example shown before the question
+- Five-shot : five examples shown before the question
+The more examples you give, the more guided the model's answer becomes.
+
+### Problem I faced and how I fixed it
+Model was returning extra text like "Category: Sports" and
+"Headline: ..." instead of just the single word.
+
+Fix 1 — moved instructions to system prompt instead of user prompt.
+         Model treats system instructions more strictly.
+Fix 2 — set max_tokens=5 so the model physically cannot output
+         a full sentence. Forces a single word response.
+
+### Accuracy test results
+
+Easy headlines (5 total):
+- Zero-shot  : 5/5 — 100%
+- One-shot   : 5/5 — 100%
+- Five-shot  : 5/5 — 100%
+- Conclusion : all 3 tied on easy headlines — no difference
+
+Ambiguous headlines (10 total):
+- Zero-shot  : 7/10
+- One-shot   : 7/10
+- Five-shot  : 7/10
+- Winner     : All approaches tied — prompts are strong!
+Conclusion: use Zero-shot in production (same accuracy, lower cost).
+
+### Headlines that confused the model
+- (write which ambiguous headlines got wrong answers and why)
+
+### Key insights from today
+
+1. For clear headlines — zero-shot is enough. No need for examples.
+   Use zero-shot in production for obvious categories.
+
+2. For ambiguous headlines — few-shot examples genuinely help.
+   Examples guide the model when the category boundary is unclear.
+
+3. Few-shot costs more tokens on EVERY call — not just once.
+   If you make 1000 API calls per day, five-shot costs 5x more
+   than zero-shot across all those calls. Always ask: is the
+   accuracy improvement worth the cost increase?
+
+4. max_tokens is a powerful format control tool — not just a cost
+   tool. Setting it to 5 forced single-word output better than
+   any prompt instruction alone.
+
+5. System prompt vs user prompt — system prompt instructions are
+   followed more strictly. Always put format requirements in the
+   system prompt.
+
+### My rule for choosing shot type in real apps
+- Category is obvious (Sports, Tech, Finance) → Zero-shot
+- Category is ambiguous or overlapping → Few-shot (3-5 examples)
+- Output format must be strict → System prompt + low max_tokens
+
+### Token cost comparison (approximate)
+- Zero-shot  : ~20 tokens per call
+- One-shot   : ~50 tokens per call
+- Five-shot  : ~120 tokens per call
+At 1000 calls/day: Zero-shot = $0.012 vs Five-shot = $0.072
+
+### One question I still have
+At what point does adding more examples (10-shot, 20-shot) stop
+improving accuracy? Is there a point of diminishing returns?
+
+
