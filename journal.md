@@ -204,3 +204,33 @@ At what point does adding more examples (10-shot, 20-shot) stop
 improving accuracy? Is there a point of diminishing returns?
 
 
+## Day 9 — Chain-of-Thought Prompting
+Date: 24-04-2026
+
+### What I observed on simple problems
+Llama 3.3 70B is powerful enough to solve all 5 simple problems
+correctly even without CoT. Direct and CoT tied 5/5.
+
+### Why CoT still matters — the real conditions
+CoT makes a genuine difference when ALL of these are true:
+1. Problem requires 3+ dependent calculation steps
+2. An error in step 1 ruins all following steps
+3. The model being used is smaller or weaker
+4. The stakes of a wrong answer are high
+
+### Hard problem results
+- Simple problems  : Direct = CoT (Llama 3.3 is strong)
+- Hard problems    : CoT wins — father-son, three-boxes failed direct
+- Reverse discount : CoT wins — chained percentages trip direct answers
+
+### My real-world rule
+- Using GPT-4o / Llama 3.3 70B + simple problems → skip CoT, save tokens
+- Using smaller models (Llama 3.2 1B, Gemma 2B) → CoT helps a lot
+- Any problem with 3+ chained steps → always use CoT regardless of model
+- Production apps → test both, measure accuracy difference, then decide
+
+### Cost vs accuracy tradeoff
+CoT costs 5-7x more tokens. On 1000 calls/day that's a real cost.
+Never use CoT by default — only when accuracy testing proves it helps.
+
+
