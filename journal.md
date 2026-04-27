@@ -239,4 +239,10 @@ Never use CoT by default — only when accuracy testing proves it helps.
 - Always add json.loads() fallback with .replace() cleanup
 - This skill is used in every real AI app — extractors, classifiers, summarizers
 
+## Day 11 — Prompt Chaining
+- Each prompt output becomes the next prompt input — simple but powerful
+- This is exactly what LangChain automates — now I understand why it exists
+- 3-step chain total: ~450 tokens vs ~150 for single prompt
+- When to chain: when one prompt cannot reliably do the full task alone
+
 
