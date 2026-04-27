@@ -233,4 +233,10 @@ CoT makes a genuine difference when ALL of these are true:
 CoT costs 5-7x more tokens. On 1000 calls/day that's a real cost.
 Never use CoT by default — only when accuracy testing proves it helps.
 
+## Day 10 — Output Format Control
+- Magic phrase: "ONLY valid JSON, no markdown, no explanation"
+- temperature=0 is critical for format consistency
+- Always add json.loads() fallback with .replace() cleanup
+- This skill is used in every real AI app — extractors, classifiers, summarizers
+
 
