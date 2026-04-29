@@ -245,4 +245,77 @@ Never use CoT by default — only when accuracy testing proves it helps.
 - 3-step chain total: ~450 tokens vs ~150 for single prompt
 - When to chain: when one prompt cannot reliably do the full task alone
 
+## Day 12 — Project 1: AI Text Analyzer (Core Build)
+
+### What I built
+A command-line text analyzer tool in project1/analyzer.py that takes
+any text via --text or --file flag, sends it to Llama 3.3 via Groq API,
+parses the structured JSON response, and displays formatted results.
+
+### How it works (architecture)
+User input (--text or --file)
+    ↓
+analyzer.py reads the text
+    ↓
+Prompt asks LLM to return JSON with summary, sentiment, keywords
+    ↓
+json.loads() parses the response
+    ↓
+display() formats and prints the results to terminal
+
+### Problem I faced and how I fixed it
+Problem : load_dotenv() couldn't find .env because project1 is a
+          subfolder — it was looking in the wrong directory.
+
+Fix     : Used pathlib to explicitly point to parent folder's .env:
+          load_dotenv(dotenv_path=Path(__file__).parent.parent / ".env")
+
+Lesson  : Always use Path(__file__) for relative paths in subfolders.
+          Never assume the current working directory is correct.
+
+### Second problem — imports in wrong place
+Problem : Placed "from pathlib import Path" in the middle of the file
+          instead of at the top with other imports.
+
+Fix     : Moved all imports to the top of the file.
+
+Lesson  : Python imports always go at the very top of the file.
+          Order matters: imports → load_dotenv → client → functions → main
+
+### What I observed
+- Short text (7 words) only returns 3 keywords — model can only find
+  what's genuinely there. Cannot invent 5 keywords from 7 words.
+- Longer text gives all 5 keywords as expected.
+- temperature=0 gives consistent JSON structure every time.
+- json.loads() validation is essential — always add the fallback cleanup.
+
+### Key code pattern I learned today
+argparse lets you build clean CLI tools with named flags:
+  --text  for direct string input
+  --file  for reading from a file
+  --output for saving results (Day 13)
+This pattern is used in almost every professional CLI tool.
+
+### Test results
+Tested on 3 texts:
+1. ISRO solar mission (positive, Tech) ✓
+2. Worst movie ever (negative, Entertainment) ✓  
+3. Short text — 7 words (only 3 keywords returned — expected) ✓
+
+### What this project does that's actually useful
+Takes unstructured text → returns structured data in seconds.
+Real use case: analyzing 100s of hotel reviews automatically,
+classifying news articles, monitoring social media sentiment.
+This is the core pattern behind most NLP products.
+
+### One question I still have
+How do I handle the case where the model returns valid JSON but
+with wrong keys — for example "keyword" instead of "keywords"?
+Should I validate the keys after parsing?
+
+### Commit
+git add analyzer.py
+git commit -m "Day 12 - Project 1 core analyzer working"
+git push
+
 
