@@ -313,9 +313,61 @@ How do I handle the case where the model returns valid JSON but
 with wrong keys — for example "keyword" instead of "keywords"?
 Should I validate the keys after parsing?
 
-### Commit
-git add analyzer.py
-git commit -m "Day 12 - Project 1 core analyzer working"
-git push
+
+## Day 13 — Project 1 Extended
+
+### What I added today
+1. Topic categorization — 8 categories: Tech, Sports, Finance,
+   Health, Education, Entertainment, Politics, General
+2. --output flag — saves results to .txt file with timestamp
+3. Error handling — friendly messages for short text, missing
+   files, and API failures
+4. --help flag — clear usage instructions with examples
+
+### All flags working
+--text   : direct text input         ✓
+--file   : read from .txt file       ✓
+--output : save results to file      ✓
+--help   : shows usage clearly       ✓
+
+### Edge cases handled
+Short text (Hi)     : "Text too short" error    ✓
+File not found      : "File not found" error     ✓
+API failure         : "Check API key" message    ✓
+
+### Key code patterns learned today
+1. argparse epilog — adds examples section to --help output
+2. datetime.now().strftime() — formats timestamp in output file
+3. try/except ValueError — catches custom validation errors
+4. try/except FileNotFoundError — handles missing file gracefully
+5. Nested try/except — different error types need different messages
+
+### What results.txt looks like
+==================================================
+AI TEXT ANALYZER RESULTS
+Generated : 2026-04-30 11:25
+==================================================
+Words     : 6
+Topic     : Sports
+Sentiment : POSITIVE (score: 0.9)
+Summary   : India won the cricket final against Australia
+Keywords  : India, Australia, cricket, final
+==================================================
+
+### Project 1 is now a real usable tool
+Anyone can clone this repo, install dependencies, and use it
+immediately. That is what makes it portfolio-worthy — not just
+a script, but a complete CLI tool with proper UX.
+
+### Biggest lesson of Day 13
+Error handling is what separates a script from a real tool.
+A script crashes on bad input. A real tool explains what went
+wrong and how to fix it. Always handle errors before shipping.
+
+### One question I still have
+Can I add a --batch flag that reads multiple texts from a CSV
+file and analyzes all of them at once? That would make this
+tool much more powerful for real use cases.
+
 
 
